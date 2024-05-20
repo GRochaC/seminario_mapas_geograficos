@@ -1,0 +1,305 @@
+---
+title: "Mapas"
+format: 
+  revealjs:
+    embed-resources: true
+editor: visual
+---
+
+## Sumário {auto-animate="true"}
+
+::: incremental
+-   Dados espaciais
+
+-   Leaflet 
+
+-   Googleways
+:::
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+#| include: false
+#| cache: true
+
+#Pacotes
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load("sf", "tidyverse", "ggplot2", "dplyr", "plotly", "readr", "geobr")
+
+#tava dando erro sem??
+library(ggplot2)
+library(geobr)
+```
+
+
+## Dados espaciais:  {auto-animate="true"}
+
+::: incremental
+
+  - Pacotes
+  - GEOBR
+  - Shapefile
+  - geoJSON
+  
+:::
+
+
+
+
+## Dados espaciais: {auto-animate="true"}
+
+::: nonincremental
+
+  - Pacotes
+  - **GEOBR**
+  - Shapefile
+  - geoJSON
+  
+:::
+
+
+##  {auto-animate="true"}
+
+::: {style="margin-top: 100px;"}
+Geobr
+:::
+
+##  {auto-animate="true"}
+
+::: {style="margin-top: 200px; font-size: 3em; color: #feb845;"}
+Geobr
+:::
+
+::: {style="text-align: right; margin-top: -350px;"}
+<img src="geobr/geobr_logo_y.png" width="50%"/>
+:::
+
+## Geobr
+
+::: {style="display: flex; justify-content: space-between;"}
+::: {style="text-align: left;"}
+É um pacote para download de conjuntos de [<strong>dados espaciais oficiais do Brasil</strong>]{style="color: #feb845;"}. O pacote inclui uma ampla gama de dados geoespaciais em formato de geopacote (como [<strong>shapefiles</strong>]{style="color: #feb845;"}).
+:::
+
+::: {style="text-align: right;"}
+<img src="geobr/brasil.png" width="100%"/>
+:::
+:::
+
+## Exemplo
+
+```{r}
+#| echo: true
+#| results: hide
+
+# Ler município específico em um determinado ano
+mun <- geobr::read_municipality(code_muni = 5300108, year = 2017)
+# 5300108 = Brasília
+# Ler todos os municípios de um estado específico em um determinado ano
+mun <- geobr::read_municipality(code_muni = 33, year = 2010) # ou
+mun <- geobr::read_municipality(code_muni = "RJ", year = 2010)
+
+# Ler todos os municípios do país em um determinado ano
+mun <- geobr::read_municipality(code_muni = "all", year = 2018)
+```
+
+[IBGE](https://www.ibge.gov.br/explica/codigos-dos-municipios.php)
+
+## Funções {background-color="#feb845"}
+
+![](geobr/teste4.png)
+
+## Exemplos
+
+::: panel-tabset
+### Codigo
+
+Estados Brasileiros
+
+```{r}
+#| echo: true
+estados <- geobr::read_state(
+  year = 2019, 
+  showProgress = FALSE
+)
+# Remover os eixos do gráfico
+sem_eixos <- ggplot2::theme(axis.title=element_blank(),
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank())
+
+# Plotar todos os estados brasileiros
+g1 <- ggplot() +
+  geom_sf(data=estados, fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) +
+  labs(subtitle="Estados", size=8) +
+  theme_minimal() +
+  sem_eixos
+
+```
+
+### Grafico
+
+```{r}
+g1
+```
+
+```{r}
+#| echo: false
+# Baixar todos os municípios do Rio
+all_muni <- geobr::read_municipality(
+  code_muni = "RJ", 
+  year= 2010,
+  showProgress = FALSE
+)
+
+# Gráfico
+g2 <- ggplot() +
+  geom_sf(data=all_muni, fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) +
+  labs(subtitle="Municípios do Rio de Janeiro, 2000", size=8) +
+  theme_minimal() +
+  sem_eixos
+
+
+```
+
+### Grafico
+
+```{r}
+g2
+```
+:::
+
+
+
+
+
+
+## Dados espaciais: {auto-animate="true"}
+
+::: nonincremental
+
+  - Pacotes
+  - GEOBR
+  - **Shapefile**
+  - geoJSON
+  
+:::
+
+
+##  {auto-animate="true"}
+
+::: {style="margin-top: 200px; font-size: 3em; color: blue;"}
+Shapefile
+:::
+
+::: {style="text-align: right; margin-top: -350px;"}
+<img src="shapefile/animation.gif" style="width:500px;height:auto;">
+:::
+
+## O que é um Shapefile?
+- Formato popular para dados geoespaciais.
+- Armazena informações geométricas e atributos em múltiplos arquivos.
+- Normalmente composto por três arquivos principais: `.shp`, `.shx`, `.dbf`.
+
+### Como encontrar? 
+- Sites de instituições geográficas/governo
+- Sites de banco de dados
+- Natural Earth (rnaturalearth)
+
+
+------------------------------------------------------------------------
+
+## Aplicação no R 
+- Pacotes: Simple Features (_sf_) e ggplot2
+- Geometria: geom_sf
+
+### Funções principais
+- Ler dados espaciais: read_sf, st_read, etc
+- Operações geométricas: st_disjoint, st_intersects, etc
+- Visualização: geom_sf
+
+[Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/main/sf.pdf)
+
+
+# Aplicação
+
+## Banco de dados
+- Natural Earth
+- https://www.naturalearthdata.com/downloads/50m-cultural-vectors/
+- Contém várias informações referente aos países do mundo, incluindo a geometria.
+
+## Lendo o banco de dados
+```{r}
+#| echo: true
+#| cache: true
+
+my_sf<- read_sf("shapefile/ne_50m_admin_0_countries/ne_50m_admin_0_countries.shp")
+
+my_sf %>%
+  select(SOVEREIGNT, POSTAL, CONTINENT, NAME_PT, ISO_A3,geometry) %>%
+  head()
+```
+
+---
+
+```{r}
+#| echo: true
+#| cache: true
+
+ggplot(my_sf) +
+  geom_sf(fill = "#69b3a2", color = "white")+
+  theme_minimal() 
+```
+
+
+---
+
+```{r}
+#| echo: true
+#| cache: true
+library(rnaturalearth)
+my_sf |>
+  filter(CONTINENT == "South America") |>
+  ggplot() +
+  geom_sf(fill = "lightblue", color = "black") +
+  geom_sf_text(aes(label = NAME_PT), size = 2)+
+  theme_minimal()
+
+```
+
+---
+
+::: panel-tabset
+### Código
+```{r}
+#| echo: true
+#| cache: true
+
+poluicao<- read_csv("shapefile/GCB2022v27_MtCO2_flat.csv") |>
+  filter(Year > 2000) 
+
+mapa_poluicao <- left_join(my_sf |>
+                             select(ISO_A3, NAME_PT, geometry),
+                           poluicao, by = c("ISO_A3" = "ISO 3166-1 alpha-3"))
+
+
+mapa<- ggplot(data = mapa_poluicao) +
+  geom_sf(aes(fill = Total)) +  
+  scale_fill_viridis_c(option = "turbo") +  
+  labs(title = "Quantidade de Poluição por País") +
+  theme_minimal()
+
+```
+### Mapa
+```{r}
+mapa
+```
+:::
+
+
+## Referências
+
+-   https://ipeagit.github.io/geobr/#r-reading-the-data-as-an-sf-object
+
+
