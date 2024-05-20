@@ -1,0 +1,19 @@
+---
+title: "Untitled"
+format: 
+  revealjs:
+    embed-resources: true
+editor: visual
+---
+
+```{r}
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load("leaflet","sf")
+```
+
+# Leaflet
+
+
+
+
+
