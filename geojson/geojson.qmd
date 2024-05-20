@@ -1,0 +1,86 @@
+---
+title: "GeoJSON"
+format: 
+  revealjs:
+    embed-resources: true
+editor: visual
+---
+
+# GeoJSON
+
+## Introdução
+GeoJSON é um formato para codificar uma variedade de estruturas de dados geográficos usando _JavaScript Object Notation_ (JSON). 
+
+Um objeto GeoJSON pode representar uma região no espaço (Geometry), uma entidade espacialmente delimitada (Feature), ou uma lista de Features (FeatureCollection).
+
+GeoJSON utiliza um sistema de referência de coordenadas geográficas, o Sistema Geodésico Mundial de 1984, com unidades de longitude e latitude em graus decimais.
+
+## Geometry
+Um objeto Geometry representa pontos, curvas, e superfíces em um espaço de coordenadas.
+
+Tipos de objetos Geometry:
+
+  - 0-dimensional: Point e MultiPoint
+  
+  - Unidimensional: LineString e MultiString
+  
+  - Bidimensional: Polygon e MultiPolygon
+  
+  
+## Features e FeatureCollection
+Um objeto Feature representa uma entidade espacialmente delimitada. Esse objeto é uma combinação de uma geometria (objeto Geometry) e de características (um objeto que contém um número de pares de propriedades).
+
+Já um objeto FeatureCollection é um objeto que contém vários objetos Features em sua composição.
+
+## Exemplo
+```{r, echo = T, eval = F}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-105.01621, 39.57422]
+      },
+      "properties": {
+        "name": "Ponto Exemplo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-105.01621, 39.57422],
+          [-80.6665134, 35.0539943]
+        ]
+      },
+      "properties": {
+        "name": "Linha Exemplo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-105.01621, 39.57422],
+            [-80.6665134, 35.0539943],
+            [-80.6665134, 45.5699943],
+            [-105.01621, 45.5699943],
+            [-105.01621, 39.57422]
+          ]
+        ]
+      },
+      "properties": {
+        "name": "Polígono Exemplo"
+      }
+    }
+  ]
+}
+```
+
+## Referências
+- [https://geojson.org/](https://geojson.org/)
