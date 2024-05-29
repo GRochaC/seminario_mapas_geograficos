@@ -8,11 +8,14 @@ editor: visual
 
 ```{r}
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load("leaflet", "sf","geojsonio", "tidyverse")
+pacman::p_load("leaflet", "sf","geojsonio", "tidyverse", "jsonlite","colorRamps","grDevices")
 
 library(leaflet)
 library(sf)
 library(tidyverse)
+library(jsonlite)
+library(colorRamps)
+library(grDevices)
 library(geojsonio)
 ```
 
@@ -51,6 +54,49 @@ mapa = leaflet(dados, options = leafletOptions(dragging = FALSE,
 ```{r}
 mapa
 ```
+
+## Brasil
+```{r, echo = T}
+if(!file.exists("brasil.geojson")) {
+  # cria o arquivo geojson a partir do arquivo json
+  dados_brasil = st_read("brazil_geo.json/brazil_geo.json") %>%
+    st_write("brasil.geojson", driver = "GEOJSON")
+}
+
+# lê o arquivo geojson como um objeto espacial "sp"
+dados_brasil = geojsonio::geojson_read("brasil.geojson", what = "sp")
+
+# paleta de cores para cada estado
+cores = colorFactor(terrain.colors(length(dados_brasil$id)), dados_brasil$id)
+
+# cria o mapa estático
+mapa_b = leaflet(dados_brasil, options = leafletOptions(dragging = FALSE, 
+                                               touchZoom = F, 
+                                               doubleClickZoom = F, 
+                                               zoomControl = F, 
+                                               scrollWheelZoom = F)) %>%
+  
+  # adiciona os tiles do mapa com imagens de satélite
+  addTiles(urlTemplate = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+           options = tileOptions(
+             attribution = 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+           )) %>%
+  
+  # adiciona os polígonos
+  addPolygons(stroke = F,
+              fillOpacity = 1,
+              fillColor = ~cores(dados_brasil$id),
+              label = dados_brasil$id,
+              popup = dados_brasil$name)
+
+```
+
+
+## Brasil
+```{r}
+mapa_b
+```
+
 
 ## Cameras de Segurança
 ```{r, echo = T}
