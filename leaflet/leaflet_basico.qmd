@@ -157,3 +157,41 @@ mapa_c = leaflet(dados_cameras) %>%
 ```{r}
 mapa_c
 ```
+
+## Regiões Administrativas DF
+```{r, echo = T}
+if(!file.exists("regioes_adm_df.geojson")) {
+  # cria o arquivo geojson a partir do arquivo json
+  dados_brasil = st_read("regioes_adm_df.json") %>%
+    st_write("regioes_adm_df.geojson", driver = "GEOJSON")
+}
+
+# lê o arquivo geojson como um objeto espacial "sp"
+dados_regioes = geojsonio::geojson_read("regioes_adm_df.geojson", what = "sp")
+
+# paleta de cores para cada região administrativa
+cores = colorFactor("Paired", dados_regioes$id)
+
+# cria o mapa
+mapa_df = leaflet(dados_regioes) %>%
+  
+  # adiciona os tiles
+  addTiles() %>%
+  
+  # adiciona os polígonos
+  addPolygons(stroke = T,
+              fillOpacity = 0.75,
+              smoothFactor = 0.5,
+              color = "black",
+              weight = 1,
+              opacity = 1,
+              fillColor = ~cores(dados_regioes$id),
+              label = dados_regioes$ra)
+ 
+```
+
+## Regiões Administrativas DF
+```{r}
+mapa_df
+```
+
