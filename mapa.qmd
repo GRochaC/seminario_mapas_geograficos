@@ -11,7 +11,7 @@ editor: visual
 ::: incremental
 -   Dados espaciais
 
--   Leaflet 
+-   Leaflet
 
 -   Googleways
 :::
@@ -26,39 +26,31 @@ editor: visual
 
 #Pacotes
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load("sf", "tidyverse", "ggplot2", "dplyr", "plotly", "readr", "geobr")
+pacman::p_load("sf", "tidyverse", "ggplot2", "dplyr", "plotly", "readr", "geobr", "googleway", "ggmap")
 
+key = "AIzaSyC78zbXYMb-7nD8R-YiGruRRXicfsdhqiY"
 #tava dando erro sem??
 library(ggplot2)
 library(geobr)
 ```
 
-
-## Dados espaciais:  {auto-animate="true"}
+## Dados espaciais: {auto-animate="true"}
 
 ::: incremental
-
-  - Pacotes
-  - GEOBR
-  - Shapefile
-  - geoJSON
-  
+-   Pacotes
+-   GEOBR
+-   Shapefile
+-   geoJSON
 :::
-
-
-
 
 ## Dados espaciais: {auto-animate="true"}
 
 ::: nonincremental
-
-  - Pacotes
-  - **GEOBR**
-  - Shapefile
-  - geoJSON
-  
+-   Pacotes
+-   **GEOBR**
+-   Shapefile
+-   geoJSON
 :::
-
 
 ##  {auto-animate="true"}
 
@@ -170,22 +162,14 @@ g2
 ```
 :::
 
-
-
-
-
-
 ## Dados espaciais: {auto-animate="true"}
 
 ::: nonincremental
-
-  - Pacotes
-  - GEOBR
-  - **Shapefile**
-  - geoJSON
-  
+-   Pacotes
+-   GEOBR
+-   **Shapefile**
+-   geoJSON
 :::
-
 
 ##  {auto-animate="true"}
 
@@ -194,42 +178,46 @@ Shapefile
 :::
 
 ::: {style="text-align: right; margin-top: -350px;"}
-<img src="shapefile/animation.gif" style="width:500px;height:auto;">
+<img src="shapefile/animation.gif" style="width:500px;height:auto;"/>
 :::
 
 ## O que é um Shapefile?
-- Formato popular para dados geoespaciais.
-- Armazena informações geométricas e atributos em múltiplos arquivos.
-- Normalmente composto por três arquivos principais: `.shp`, `.shx`, `.dbf`.
 
-### Como encontrar? 
-- Sites de instituições geográficas/governo
-- Sites de banco de dados
-- Natural Earth (rnaturalearth)
+-   Formato popular para dados geoespaciais.
+-   Armazena informações geométricas e atributos em múltiplos arquivos.
+-   Normalmente composto por três arquivos principais: `.shp`, `.shx`, `.dbf`.
 
+### Como encontrar?
+
+-   Sites de instituições geográficas/governo
+-   Sites de banco de dados
+-   Natural Earth (rnaturalearth)
 
 ------------------------------------------------------------------------
 
-## Aplicação no R 
-- Pacotes: Simple Features (_sf_) e ggplot2
-- Geometria: geom_sf
+## Aplicação no R
+
+-   Pacotes: Simple Features (*sf*) e ggplot2
+-   Geometria: geom_sf
 
 ### Funções principais
-- Ler dados espaciais: read_sf, st_read, etc
-- Operações geométricas: st_disjoint, st_intersects, etc
-- Visualização: geom_sf
+
+-   Ler dados espaciais: read_sf, st_read, etc
+-   Operações geométricas: st_disjoint, st_intersects, etc
+-   Visualização: geom_sf
 
 [Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/main/sf.pdf)
-
 
 # Aplicação
 
 ## Banco de dados
-- Natural Earth
-- https://www.naturalearthdata.com/downloads/50m-cultural-vectors/
-- Contém várias informações referente aos países do mundo, incluindo a geometria.
+
+-   Natural Earth
+-   https://www.naturalearthdata.com/downloads/50m-cultural-vectors/
+-   Contém várias informações referente aos países do mundo, incluindo a geometria.
 
 ## Lendo o banco de dados
+
 ```{r}
 #| echo: true
 #| cache: true
@@ -241,7 +229,7 @@ my_sf %>%
   head()
 ```
 
----
+------------------------------------------------------------------------
 
 ```{r}
 #| echo: true
@@ -252,8 +240,7 @@ ggplot(my_sf) +
   theme_minimal() 
 ```
 
-
----
+------------------------------------------------------------------------
 
 ```{r}
 #| echo: true
@@ -268,10 +255,11 @@ my_sf |>
 
 ```
 
----
+------------------------------------------------------------------------
 
 ::: panel-tabset
 ### Código
+
 ```{r}
 #| echo: true
 #| cache: true
@@ -291,15 +279,20 @@ mapa<- ggplot(data = mapa_poluicao) +
   theme_minimal()
 
 ```
+
 ### Mapa
+
 ```{r}
 mapa
 ```
 :::
 
-
 ## Referências
 
 -   https://ipeagit.github.io/geobr/#r-reading-the-data-as-an-sf-object
+
+# Leaflet
+
+#  [Googleway](https://symbolixau.github.io/googleway/articles/googleway-vignette.html)
 
 
