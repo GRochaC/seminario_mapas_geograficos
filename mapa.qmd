@@ -26,7 +26,7 @@ editor: visual
 
 #Pacotes
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load("sf", "tidyverse", "ggplot2", "dplyr", "plotly", "readr", "geobr", "googleway", "ggmap")
+pacman::p_load("sf", "tidyverse","ggplot2", "ggplot","dplyr", "plotly", "readr", "geobr", "googleway", "ggmap","leaflet","geojsonio", "jsonlite","colorRamps","grDevices","tibble")
 
 key = "AIzaSyC78zbXYMb-7nD8R-YiGruRRXicfsdhqiY"
 #tava dando erro sem??
@@ -64,21 +64,12 @@ Geobr
 Geobr
 :::
 
-::: {style="text-align: right; margin-top: -350px;"}
-<img src="geobr/geobr_logo_y.png" width="50%"/>
-:::
-
 ## Geobr
 
-::: {style="display: flex; justify-content: space-between;"}
 ::: {style="text-align: left;"}
 É um pacote para download de conjuntos de [<strong>dados espaciais oficiais do Brasil</strong>]{style="color: #feb845;"}. O pacote inclui uma ampla gama de dados geoespaciais em formato de geopacote (como [<strong>shapefiles</strong>]{style="color: #feb845;"}).
 :::
 
-::: {style="text-align: right;"}
-<img src="geobr/brasil.png" width="100%"/>
-:::
-:::
 
 ## Exemplo
 
@@ -112,25 +103,22 @@ Estados Brasileiros
 
 ```{r}
 #| echo: true
+library(ggplot2)
+library(geobr)
 estados <- geobr::read_state(
   year = 2019, 
   showProgress = FALSE
 )
-# Remover os eixos do gráfico
-sem_eixos <- ggplot2::theme(axis.title=element_blank(),
-                 axis.text=element_blank(),
-                 axis.ticks=element_blank())
 
 # Plotar todos os estados brasileiros
 g1 <- ggplot() +
   geom_sf(data=estados, fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) +
   labs(subtitle="Estados", size=8) +
-  theme_minimal() +
-  sem_eixos
+  theme_minimal() 
 
 ```
 
-### Grafico
+### Estados
 
 ```{r}
 g1
@@ -138,6 +126,8 @@ g1
 
 ```{r}
 #| echo: false
+library(ggplot2)
+library(geobr)
 # Baixar todos os municípios do Rio
 all_muni <- geobr::read_municipality(
   code_muni = "RJ", 
@@ -149,13 +139,12 @@ all_muni <- geobr::read_municipality(
 g2 <- ggplot() +
   geom_sf(data=all_muni, fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) +
   labs(subtitle="Municípios do Rio de Janeiro, 2000", size=8) +
-  theme_minimal() +
-  sem_eixos
+  theme_minimal() 
 
 
 ```
 
-### Grafico
+### Municípios
 
 ```{r}
 g2
@@ -291,8 +280,205 @@ mapa
 
 -   https://ipeagit.github.io/geobr/#r-reading-the-data-as-an-sf-object
 
-# Leaflet
+##  {auto-animate="true"}
 
-#  [Googleway](https://symbolixau.github.io/googleway/articles/googleway-vignette.html)
+::: {style="margin-top: 100px;"}
+Leaflet
+:::
 
+##  {auto-animate="true"}
 
+::: {style="margin-top: 200px; font-size: 3em; color: #949494;"}
+**Leaflet**
+:::
+
+::: {style="text-align: right; margin-top: -350px;"}
+![](leaflet/leaflet.png)
+:::
+
+## Leaflet
+
+[<strong>Leaflet</strong>]{style="color: #949494;"} é uma das bibliotecas open source mais famosas para mapas iterativos.
+
+## Características
+
+-   Panorâmica e zoom iterativos.
+-   Compor mapas com marcadores, polígonos, linhas, popups e dentro outros.
+-   Incorporar mapas em documentos knitr/R Markdown/Quarto e aplicativos Shiny.
+-   Renderizar facilmente objetos espaciais dos pacotes `sp` ou `sf`, ou data frames com colunas de latitude/longitude.
+
+## Mapa Estático da UnB
+
+```{r, echo = T}
+library(leaflet)
+# lê o arquivo geojson como um objeto espacial "sp"
+dados = geojsonio::geojson_read("leaflet/pontos_unb.geojson", what = "sp")
+
+# cria o mapa estático
+mapa = leaflet(dados, options = leafletOptions(dragging = FALSE, 
+                                               touchZoom = F, 
+                                               doubleClickZoom = F, 
+                                               zoomControl = F, 
+                                               scrollWheelZoom = F)) %>%
+  # adiciona os tiles do mapa 
+  addTiles() %>%
+  
+  # adiciona os marcadores
+  addMarkers(lng = dados@coords[,1], 
+             lat = dados@coords[,2], 
+             label = dados$nome,
+             popup = dados$descricao)
+```
+
+## UnB
+
+```{r}
+mapa
+```
+
+## Mapa Estático do Brasil
+
+```{r, echo = T}
+if(!file.exists("leaflet/brasil.geojson")) {
+  # cria o arquivo geojson a partir do arquivo json
+  dados_brasil = st_read("leaflet/brazil_geo.json/brazil_geo.json") %>%
+    st_write("leaflet/brasil.geojson", driver = "GEOJSON")
+}
+
+# lê o arquivo geojson como um objeto espacial "sp"
+dados_brasil = geojsonio::geojson_read("leaflet/brasil.geojson", what = "sp")
+
+# paleta de cores para cada estado
+cores = colorFactor(terrain.colors(length(dados_brasil$id)), dados_brasil$id)
+
+# cria o mapa estático
+mapa_b = leaflet(dados_brasil, options = leafletOptions(dragging = FALSE, 
+                                               touchZoom = F, 
+                                               doubleClickZoom = F, 
+                                               zoomControl = F, 
+                                               scrollWheelZoom = F)) %>%
+  
+  # adiciona os tiles do mapa com imagens de satélite
+  addTiles(urlTemplate = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+           options = tileOptions(
+             attribution = 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+           )) %>%
+  
+  # adiciona os polígonos
+  addPolygons(stroke = F,
+              fillOpacity = 1,
+              fillColor = ~cores(dados_brasil$id),
+              label = dados_brasil$id,
+              popup = dados_brasil$name)
+
+```
+
+## Brasil
+
+```{r}
+mapa_b
+```
+
+## Mapa Interativo de Câmeras de Segurança
+
+```{r, echo = T}
+library(sf)
+# lê o arquivo geojson como um objeto espacial "sp"
+dados_cameras = geojsonio::geojson_read("leaflet/Cameras_de_Seguranca.geojson", what = "sp")
+
+# converte as coordenadas UTM para latlog
+coords = dados_cameras %>%
+  as_tibble() %>%
+  st_as_sf(coords = c("point_x","point_y"), 
+           crs = "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs") %>%
+  st_transform(crs = 4326) %>%
+  st_coordinates()
+
+# substitui as coordenadas UTM pelas coordenadas latlog
+dados_cameras$point_x = coords[,"X"]
+dados_cameras$point_y = coords[,"Y"]
+
+# funcao que padroniza os popupinfo de cada camera
+set_popup = function(popup) {
+  popup = str_to_lower(popup) %>%
+    str_trim()
+  
+  if(str_length(popup) == 0) return("N/A")
+  
+  if(str_detect(popup, "furtad") || str_detect(popup, "vandalizad")) return("Furtada/Vandalizada")
+  else if(str_detect(popup, "não")) return("Não Instalada")
+  
+  return("Instalada")
+}
+
+# substitui para os popupinfo padronizado
+dados_cameras$popupinfo = unlist(map(dados_cameras$popupinfo, set_popup))
+
+# paleta de cores para cada estado da camera
+pal = colorFactor(c("green", "orange", "red", "blue"), 
+                  domain = c("Instalada", "Furtada/Vandalizada", "Não Instalada", "N/A"), ordered = T)
+
+# cria o mapa
+mapa_c = leaflet(dados_cameras) %>%
+  
+  # adiciona o tiles do mapa
+  addTiles() %>%
+  
+  # define uma visão inicial
+  setView(lng = -47.88281317652584, lat = -15.79409191690003, zoom = 12) %>%
+  
+  # adiciona os marcadores
+  addCircleMarkers(lng = ~dados_cameras$point_x, 
+                   lat = ~dados_cameras$point_y, 
+                   label = ~dados_cameras$name, 
+                   popup = ~dados_cameras$popupinfo, 
+                   color = ~pal(dados_cameras$popupinfo),
+                   radius = 6)
+```
+
+## Câmeras de Segurança
+
+```{r}
+mapa_c
+```
+
+## Mapa Interativo das Regiões Administrativas DF
+
+```{r, echo = T}
+if(!file.exists("leaflet/regioes_adm_df.geojson")) {
+  # cria o arquivo geojson a partir do arquivo json
+  dados_brasil = st_read("leaflet/regioes_adm_df.json") %>%
+    st_write("leaflet/regioes_adm_df.geojson", driver = "GEOJSON")
+}
+
+# lê o arquivo geojson como um objeto espacial "sp"
+dados_regioes = geojsonio::geojson_read("leaflet/regioes_adm_df.geojson", what = "sp")
+
+# paleta de cores para cada região administrativa
+cores = colorFactor("Paired", dados_regioes$id)
+
+# cria o mapa
+mapa_df = leaflet(dados_regioes) %>%
+  
+  # adiciona os tiles
+  addTiles() %>%
+  
+  # adiciona os polígonos
+  addPolygons(stroke = T,
+              fillOpacity = 0.75,
+              smoothFactor = 0.5,
+              color = "black",
+              weight = 1,
+              opacity = 1,
+              fillColor = ~cores(dados_regioes$id),
+              label = dados_regioes$ra)
+ 
+```
+
+## Regiões Administrativas DF
+
+```{r}
+mapa_df
+```
+
+# [Googleway](https://symbolixau.github.io/googleway/articles/googleway-vignette.html)
