@@ -482,3 +482,5 @@ mapa_df
 ```
 
 # [Googleway](https://symbolixau.github.io/googleway/articles/googleway-vignette.html)
+
+# [GGMap](https://www.nceas.ucsb.edu/sites/default/files/2020-04/ggmapCheatsheet.pdf)
