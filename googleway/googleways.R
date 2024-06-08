@@ -89,9 +89,24 @@ ggmap(mapa4) +
   theme_void()
 
 
+
+# Google Map
 google_map(key = key, search_box = T) %>%
   add_traffic()
 
+## Exemplo do googleway
+google_map(key = key, data = tram_stops) %>%
+  add_markers() %>%
+  add_traffic()
 
+## style map using 'cobalt simplified' style
+style <- '[{"featureType":"all","elementType":"all","stylers":[{"invert_lightness":true},
+{"saturation":10},{"lightness":30},{"gamma":0.5},{"hue":"#435158"}]},
+{"featureType":"road.arterial","elementType":"all","stylers":[{"visibility":"simplified"}]},
+{"featureType":"transit.station","elementType":"labels.text","stylers":[{"visibility":"off"}]}]'
+
+google_map(key = key, styles = style)
+
+#https://symbolixau.github.io/googleway/reference/google_map.html
 
 
