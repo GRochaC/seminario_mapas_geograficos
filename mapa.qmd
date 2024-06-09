@@ -16,7 +16,7 @@ editor: visual
 -   Googleways
 :::
 
-```{r}
+```{r setup}
 #| echo: true
 #| message: false
 #| warning: false
@@ -70,10 +70,9 @@ Geobr
 É um pacote para download de conjuntos de [<strong>dados espaciais oficiais do Brasil</strong>]{style="color: #feb845;"}. O pacote inclui uma ampla gama de dados geoespaciais em formato de geopacote (como [<strong>shapefiles</strong>]{style="color: #feb845;"}).
 :::
 
-
 ## Exemplo
 
-```{r}
+```{r geobr}
 #| echo: true
 #| results: hide
 
@@ -101,7 +100,7 @@ mun <- geobr::read_municipality(code_muni = "all", year = 2018)
 
 Estados Brasileiros
 
-```{r}
+```{r estados}
 #| echo: true
 library(ggplot2)
 library(geobr)
@@ -120,11 +119,11 @@ g1 <- ggplot() +
 
 ### Estados
 
-```{r}
+```{r estados_mapa}
 g1
 ```
 
-```{r}
+```{r municipios}
 #| echo: false
 library(ggplot2)
 library(geobr)
@@ -146,7 +145,7 @@ g2 <- ggplot() +
 
 ### Municípios
 
-```{r}
+```{r municipios_mapa}
 g2
 ```
 :::
@@ -207,7 +206,7 @@ Shapefile
 
 ## Lendo o banco de dados
 
-```{r}
+```{r banco_de_dados}
 #| echo: true
 #| cache: true
 
@@ -220,7 +219,7 @@ my_sf %>%
 
 ------------------------------------------------------------------------
 
-```{r}
+```{r mapa}
 #| echo: true
 #| cache: true
 
@@ -231,7 +230,7 @@ ggplot(my_sf) +
 
 ------------------------------------------------------------------------
 
-```{r}
+```{r sf}
 #| echo: true
 #| cache: true
 library(rnaturalearth)
@@ -249,9 +248,11 @@ my_sf |>
 ::: panel-tabset
 ### Código
 
-```{r}
+```{r poluicao}
 #| echo: true
 #| cache: true
+
+library(ggplot2)
 
 poluicao<- read_csv("shapefile/GCB2022v27_MtCO2_flat.csv") |>
   filter(Year > 2000) 
@@ -271,7 +272,7 @@ mapa<- ggplot(data = mapa_poluicao) +
 
 ### Mapa
 
-```{r}
+```{r poluicao_mapa}
 mapa
 ```
 :::
@@ -309,7 +310,7 @@ Leaflet
 
 ## Mapa Estático da UnB
 
-```{r, echo = T}
+```{r unb, echo = T}
 library(leaflet)
 # lê o arquivo geojson como um objeto espacial "sp"
 dados = geojsonio::geojson_read("leaflet/pontos_unb.geojson", what = "sp")
@@ -332,13 +333,13 @@ mapa = leaflet(dados, options = leafletOptions(dragging = FALSE,
 
 ## UnB
 
-```{r}
+```{r unb_mapa}
 mapa
 ```
 
 ## Mapa Estático do Brasil
 
-```{r, echo = T}
+```{r brasil, echo = T}
 if(!file.exists("leaflet/brasil.geojson")) {
   # cria o arquivo geojson a partir do arquivo json
   dados_brasil = st_read("leaflet/brazil_geo.json/brazil_geo.json") %>%
@@ -375,14 +376,18 @@ mapa_b = leaflet(dados_brasil, options = leafletOptions(dragging = FALSE,
 
 ## Brasil
 
-```{r}
+```{r brasil_mapa}
 mapa_b
 ```
 
-## Mapa Interativo de Câmeras de Segurança
+## Mapa Iterativo de Câmeras de Segurança
 
-```{r, echo = T}
+```{r cameras, echo = T}
 library(sf)
+library(dplyr)
+library(purrr)
+library(stringr)
+
 # lê o arquivo geojson como um objeto espacial "sp"
 dados_cameras = geojsonio::geojson_read("leaflet/Cameras_de_Seguranca.geojson", what = "sp")
 
@@ -438,13 +443,13 @@ mapa_c = leaflet(dados_cameras) %>%
 
 ## Câmeras de Segurança
 
-```{r}
+```{r cameras_mapa}
 mapa_c
 ```
 
-## Mapa Interativo das Regiões Administrativas DF
+## Mapa Iterativo das Regiões Administrativas DF
 
-```{r, echo = T}
+```{r regioes, echo = T}
 if(!file.exists("leaflet/regioes_adm_df.geojson")) {
   # cria o arquivo geojson a partir do arquivo json
   dados_brasil = st_read("leaflet/regioes_adm_df.json") %>%
@@ -477,7 +482,7 @@ mapa_df = leaflet(dados_regioes) %>%
 
 ## Regiões Administrativas DF
 
-```{r}
+```{r regioes_mapa}
 mapa_df
 ```
 
