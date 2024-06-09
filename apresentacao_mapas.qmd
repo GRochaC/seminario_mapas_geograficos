@@ -1,0 +1,791 @@
+---
+title: "Seminário: Mapas Geográficos"
+subtitle: "EST0091 - COMPUTAÇÃO EM ESTATÍSTICA 2: R"
+author: 
+  - ADRIELLY NUNES
+  - GABRIEL HENRIQUE
+  - GUILHERME CUNHA
+  - MARCUS VINICIUS
+format: 
+  revealjs:
+    embed-resources: true
+editor: visual
+---
+
+# Sumário {auto-animate="true"}
+
+::: incremental
+- Dados espaciais
+
+- Leaflet
+
+- Googleway
+
+- Referências
+:::
+
+```{r setup}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+#| include: false
+#| cache: true
+
+#Pacotes
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load("sf", "tidyverse","ggplot2", "ggplot","dplyr", "plotly", "readr", "geobr", "googleway", "ggmap","leaflet","geojsonio", "jsonlite","colorRamps","grDevices","tibble")
+
+key = "AIzaSyC78zbXYMb-7nD8R-YiGruRRXicfsdhqiY"
+#tava dando erro sem??
+library(ggplot2)
+library(geobr)
+```
+
+# Dados espaciais: {auto-animate="true"}
+
+::: incremental
+-   Pacotes
+-   GEOBR
+-   Shapefile
+-   GeoJSON
+:::
+
+# Dados espaciais: {auto-animate="true"}
+
+::: nonincremental
+-   Pacotes
+-   **GEOBR**
+-   Shapefile
+-   GeoJSON
+:::
+
+##  {auto-animate="true"}
+
+::: {style="margin-top: 100px;"}
+Geobr
+:::
+
+##  {auto-animate="true"}
+
+::: {style="margin-top: 200px; font-size: 3em; color: #feb845;"}
+Geobr
+:::
+
+::: {style="text-align: right; margin-top: -350px;"}
+<img src="imagens/geobr_logo_y.png" alt="Logo" style="width:500px;"/>
+:::
+
+## Geobr
+
+::: {style="text-align: left;"}
+É um pacote para download de conjuntos de [<strong>dados espaciais oficiais do Brasil</strong>]{style="color: #feb845;"}. O pacote inclui uma ampla gama de dados geoespaciais em formato de geopacote (como [<strong>shapefiles</strong>]{style="color: #feb845;"}).
+:::
+
+---
+
+### Exemplo
+
+```{r geobr, cache = T}
+#| echo: true
+#| results: hide
+
+# Ler município específico em um determinado ano
+mun <- geobr::read_municipality(code_muni = 5300108, year = 2017)
+# 5300108 = Brasília
+# Ler todos os municípios de um estado específico em um determinado ano
+mun <- geobr::read_municipality(code_muni = 33, year = 2010) # ou
+mun <- geobr::read_municipality(code_muni = "RJ", year = 2010)
+
+# Ler todos os municípios do país em um determinado ano
+mun <- geobr::read_municipality(code_muni = "all", year = 2018)
+```
+
+[IBGE](https://www.ibge.gov.br/explica/codigos-dos-municipios.php)
+
+
+---
+
+
+### Funções {background-color="#feb845"}
+
+![](imagens/cheat_sheet_geobr.png)
+
+---
+
+### Exemplos
+
+::: panel-tabset
+### Codigo
+
+Estados Brasileiros
+
+```{r estados, cache = T}
+#| echo: true
+library(ggplot2)
+library(geobr)
+estados <- geobr::read_state(
+  year = 2019, 
+  showProgress = FALSE
+)
+
+# Plotar todos os estados brasileiros
+g1 <- ggplot() +
+  geom_sf(data=estados, fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) +
+  labs(subtitle="Estados", size=8) +
+  theme_minimal() 
+
+```
+
+### Estados
+
+```{r estados_mapa}
+g1
+```
+
+```{r municipios, cache = T}
+#| echo: false
+library(ggplot2)
+library(geobr)
+# Baixar todos os municípios do Rio
+all_muni <- geobr::read_municipality(
+  code_muni = "RJ", 
+  year= 2010,
+  showProgress = FALSE
+)
+
+# Gráfico
+g2 <- ggplot() +
+  geom_sf(data=all_muni, fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) +
+  labs(subtitle="Municípios do Rio de Janeiro, 2000", size=8) +
+  theme_minimal() 
+
+
+```
+
+### Municípios
+
+```{r municipios_mapa}
+g2
+```
+:::
+
+# Dados espaciais: {auto-animate="true"}
+
+::: nonincremental
+-   Pacotes
+-   GEOBR
+-   **Shapefile**
+-   GeoJSON
+:::
+
+##  {auto-animate="true"}
+
+::: {style="margin-top: 200px; font-size: 3em; color: blue;"}
+Shapefile
+:::
+
+::: {style="text-align: right; margin-top: -350px;"}
+<img src="imagens/animation.gif" style="width:500px;height:auto;"/>
+:::
+
+## O que é um Shapefile?
+
+-   Formato popular para dados geoespaciais.
+-   Armazena informações geométricas e atributos em múltiplos arquivos.
+-   Normalmente composto por três arquivos principais: `.shp`, `.shx`, `.dbf`.
+
+### Como encontrar?
+
+-   Sites de instituições geográficas/governo
+-   Sites de banco de dados
+-   Natural Earth (rnaturalearth)
+
+------------------------------------------------------------------------
+
+## Aplicação no R
+
+-   Pacotes: Simple Features (*sf*) e ggplot2
+-   Geometria: geom_sf
+
+### Funções principais
+
+-   Ler dados espaciais: read_sf, st_read, etc
+-   Operações geométricas: st_disjoint, st_intersects, etc
+-   Visualização: geom_sf
+
+[Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/main/sf.pdf)
+
+---
+
+##  {auto-animate="true"}
+::: {style="text-align: center; margin: 300px 0;"}
+Aplicação
+:::
+
+---
+
+## Banco de dados
+
+-   Natural Earth
+-   https://www.naturalearthdata.com/downloads/50m-cultural-vectors/
+-   Contém várias informações referente aos países do mundo, incluindo a geometria.
+
+## Lendo o banco de dados
+
+```{r banco_de_dados}
+#| echo: true
+#| cache: true
+
+my_sf<- read_sf("dados_espaciais/shapefile/ne_50m_admin_0_countries/ne_50m_admin_0_countries.shp")
+
+my_sf %>%
+  select(SOVEREIGNT, POSTAL, CONTINENT, NAME_PT, ISO_A3,geometry) %>%
+  head()
+```
+
+------------------------------------------------------------------------
+
+```{r mapa}
+#| echo: true
+#| cache: true
+
+ggplot(my_sf) +
+  geom_sf(fill = "#69b3a2", color = "white")+
+  theme_minimal() 
+```
+
+------------------------------------------------------------------------
+
+```{r sf}
+#| echo: true
+#| cache: true
+library(rnaturalearth)
+my_sf |>
+  filter(CONTINENT == "South America") |>
+  ggplot() +
+  geom_sf(fill = "lightblue", color = "black") +
+  geom_sf_text(aes(label = NAME_PT), size = 2)+
+  theme_minimal()
+
+```
+
+------------------------------------------------------------------------
+
+::: panel-tabset
+### Código
+
+```{r poluicao}
+#| echo: true
+#| cache: true
+
+library(ggplot2)
+
+poluicao<- read_csv("dados_espaciais/shapefile/GCB2022v27_MtCO2_flat.csv") |>
+  filter(Year > 2000) 
+
+mapa_poluicao <- left_join(my_sf |>
+                             select(ISO_A3, NAME_PT, geometry),
+                           poluicao, by = c("ISO_A3" = "ISO 3166-1 alpha-3"))
+
+
+mapa<- ggplot(data = mapa_poluicao) +
+  geom_sf(aes(fill = Total)) +  
+  scale_fill_viridis_c(option = "turbo") +  
+  labs(title = "Quantidade de Poluição por País") +
+  theme_minimal()
+
+```
+
+### Mapa
+
+```{r poluicao_mapa}
+mapa
+```
+:::
+
+## Dados espaciais: {auto-animate="true"}
+
+::: nonincremental
+-   Pacotes
+-   GEOBR
+-   Shapefile
+-   **GeoJSON**
+:::
+
+##  {auto-animate="true"}
+
+::: {style="margin-top: 200px; font-size: 3em; color: #11303b;"}
+GeoJSON
+:::
+
+::: {style="text-align: right; margin-top: -350px;"}
+<img src="imagens/geojson.png" style="width:500px;height:auto;"/>
+:::
+
+## GeoJSON
+### Introdução
+- GeoJSON é um formato para codificar uma variedade de estruturas de dados geográficos usando *JavaScript Object Notation* (JSON).
+- Um objeto GeoJSON pode representar uma região no espaço (Geometry), uma entidade espacialmente delimitada (Feature), ou uma lista de Features (FeatureCollection).
+
+---
+
+## Objetos GeoJSON
+::: panel-tabset
+### Geometry
+
+Um objeto Geometry representa pontos, curvas, e superfíces em um espaço de coordenadas.
+
+Tipos de objetos Geometry:
+
+-   0-dimensional: Point e MultiPoint
+
+-   Unidimensional: LineString e MultiString
+
+-   Bidimensional: Polygon e MultiPolygon
+
+
+### Features e FeatureCollection
+
+- Um objeto Feature representa uma entidade espacialmente delimitada. Esse objeto é uma combinação de uma geometria (objeto Geometry) e de características (um objeto que contém um número de pares de propriedades).
+
+- Já um objeto FeatureCollection é um objeto que contém vários objetos Features em sua composição.
+
+### Exemplo
+```{r geojson, eval=F,echo=T}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-105.01621, 39.57422]
+      },
+      "properties": {
+        "name": "Ponto Exemplo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-105.01621, 39.57422],
+          [-80.6665134, 35.0539943]
+        ]
+      },
+      "properties": {
+        "name": "Linha Exemplo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-105.01621, 39.57422],
+            [-80.6665134, 35.0539943],
+            [-80.6665134, 45.5699943],
+            [-105.01621, 45.5699943],
+            [-105.01621, 39.57422]
+          ]
+        ]
+      },
+      "properties": {
+        "name": "Polígono Exemplo"
+      }
+    }
+  ]
+}
+```
+
+
+:::
+
+## [*Geojson.io*](https://geojson.io)
+- Ferramenta online open source capaz de abrir arquivos GeoJSON existentes e/ou criar novos arquivos contendo dados geoespaciais. 
+- Fornece ferramentas de desenho, edição de dados, busca e de exportação.
+
+## [*Geojson.io*](https://geojson.io)
+![](imagens/geojsonio.png)
+
+#  {auto-animate="true"}
+
+::: {style="margin-top: 100px;"}
+Leaflet
+:::
+
+#  {auto-animate="true"}
+
+::: {style="margin-top: 200px; font-size: 3em; color: #949494;"}
+**Leaflet**
+:::
+
+::: {style="text-align: right; margin-top: -350px;"}
+<img src="imagens/leaflet.png" alt="Logo" style="width:500px;"/>
+:::
+
+## Leaflet
+
+- [<strong>Leaflet</strong>]{style="color: #949494;"} é uma das bibliotecas open source mais famosas para mapas iterativos.
+- Funciona eficientemente em todas as principais plataformas de desktop e móveis, pode ser estendido com muitos plugins, possui uma API fácil de usar e bem documentada, e um código-fonte simples e legível.
+
+## Características
+
+-   Panorâmica e zoom iterativos.
+-   Compor mapas com marcadores, polígonos, linhas, popups e dentro outros.
+-   Incorporar mapas em documentos knitr/R Markdown/Quarto e aplicativos Shiny.
+-   Renderizar facilmente objetos espaciais dos pacotes `sp` ou `sf`, ou data frames com colunas de latitude/longitude.
+
+## Mapa Estático da UnB
+
+```{r unb, echo = T, cache = T}
+library(leaflet)
+# lê o arquivo geojson como um objeto espacial "sp"
+dados = geojsonio::geojson_read("dados_espaciais/geojson/pontos_unb.geojson", what = "sp")
+
+# cria o mapa estático
+mapa = leaflet(dados, options = leafletOptions(dragging = FALSE, 
+                                               touchZoom = F, 
+                                               doubleClickZoom = F, 
+                                               zoomControl = F, 
+                                               scrollWheelZoom = F)) %>%
+  # adiciona os tiles do mapa 
+  addTiles() %>%
+  
+  # adiciona os marcadores
+  addMarkers(lng = dados@coords[,1], 
+             lat = dados@coords[,2], 
+             label = dados$nome,
+             popup = dados$descricao)
+```
+
+## Universidade de Brasília
+
+```{r unb_mapa}
+mapa
+```
+
+## Mapa Estático do Brasil
+
+```{r brasil, echo = T, cache = T}
+if(!file.exists("dados_espaciais/geojson/brasil.geojson")) {
+  # cria o arquivo geojson a partir do arquivo json
+  dados_brasil = st_read("dados_espaciais/geojson/brazil_geo.json/brazil_geo.json") %>%
+    st_write("dados_espaciais/geojson/brasil.geojson", driver = "GEOJSON")
+}
+
+# lê o arquivo geojson como um objeto espacial "sp"
+dados_brasil = geojsonio::geojson_read("dados_espaciais/geojson/brasil.geojson", what = "sp")
+
+# paleta de cores para cada estado
+cores = colorFactor(terrain.colors(length(dados_brasil$id)), dados_brasil$id)
+
+# cria o mapa estático
+mapa_b = leaflet(dados_brasil, options = leafletOptions(dragging = FALSE, 
+                                               touchZoom = F, 
+                                               doubleClickZoom = F, 
+                                               zoomControl = F, 
+                                               scrollWheelZoom = F)) %>%
+  
+  # adiciona os tiles do mapa com imagens de satélite
+  addTiles(urlTemplate = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+           options = tileOptions(
+             attribution = 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+           )) %>%
+  
+  # adiciona os polígonos
+  addPolygons(stroke = F,
+              fillOpacity = 1,
+              fillColor = ~cores(dados_brasil$id),
+              label = dados_brasil$id,
+              popup = dados_brasil$name)
+
+```
+
+## Brasil
+
+```{r brasil_mapa}
+mapa_b
+```
+
+## {auto-animate="true"}
+::: {style="text-align: center; margin: 300px 0;"}
+Mapas Iterativos
+:::
+
+## Câmeras de Segurança
+
+```{r cameras, echo = T, cache = T}
+library(sf)
+library(dplyr)
+library(purrr)
+library(stringr)
+
+# lê o arquivo geojson como um objeto espacial "sp"
+dados_cameras = geojsonio::geojson_read("dados_espaciais/geojson/Cameras_de_Seguranca.geojson", what = "sp")
+
+# converte as coordenadas UTM para latlog
+coords = dados_cameras %>%
+  as_tibble() %>%
+  st_as_sf(coords = c("point_x","point_y"), 
+           crs = "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs") %>%
+  st_transform(crs = 4326) %>%
+  st_coordinates()
+
+# substitui as coordenadas UTM pelas coordenadas latlog
+dados_cameras$point_x = coords[,"X"]
+dados_cameras$point_y = coords[,"Y"]
+
+# funcao que padroniza os popupinfo de cada camera
+set_popup = function(popup) {
+  popup = str_to_lower(popup) %>%
+    str_trim()
+  
+  if(str_length(popup) == 0) return("N/A")
+  
+  if(str_detect(popup, "furtad") || str_detect(popup, "vandalizad")) return("Furtada/Vandalizada")
+  else if(str_detect(popup, "não")) return("Não Instalada")
+  
+  return("Instalada")
+}
+
+# substitui para os popupinfo padronizado
+dados_cameras$popupinfo = unlist(map(dados_cameras$popupinfo, set_popup))
+
+# paleta de cores para cada estado da camera
+pal = colorFactor(c("green", "orange", "red", "blue"), 
+                  domain = c("Instalada", "Furtada/Vandalizada", "Não Instalada", "N/A"), ordered = T)
+
+# cria o mapa
+mapa_c = leaflet(dados_cameras) %>%
+  
+  # adiciona o tiles do mapa
+  addTiles() %>%
+  
+  # define uma visão inicial
+  setView(lng = -47.88281317652584, lat = -15.79409191690003, zoom = 12) %>%
+  
+  # adiciona os marcadores
+  addCircleMarkers(lng = ~dados_cameras$point_x, 
+                   lat = ~dados_cameras$point_y, 
+                   label = ~dados_cameras$name, 
+                   popup = ~dados_cameras$popupinfo, 
+                   color = ~pal(dados_cameras$popupinfo),
+                   radius = 6,
+                   stroke = F,
+                   fillOpacity = 0.6)
+```
+
+## Câmeras de Segurança
+
+```{r cameras_mapa}
+mapa_c
+```
+
+## Regiões Administrativas DF
+
+```{r regioes, echo = T, cache = T}
+if(!file.exists("dados_espaciais/geojson/regioes_adm_df.geojson")) {
+  # cria o arquivo geojson a partir do arquivo json
+  dados_brasil = st_read("dados_espaciais/geojson/regioes_adm_df.json") %>%
+    st_write("dados_espaciais/geojson/regioes_adm_df.geojson", driver = "GEOJSON")
+}
+
+# lê o arquivo geojson como um objeto espacial "sp"
+dados_regioes = geojsonio::geojson_read("dados_espaciais/geojson/regioes_adm_df.geojson", what = "sp")
+
+# paleta de cores para cada região administrativa
+cores = colorFactor("Paired", dados_regioes$id)
+
+# cria o mapa
+mapa_df = leaflet(dados_regioes) %>%
+  
+  # adiciona os tiles
+  addTiles() %>%
+  
+  # adiciona os polígonos
+  addPolygons(stroke = T,
+              fillOpacity = 0.75,
+              smoothFactor = 0.5,
+              color = "black",
+              weight = 1,
+              opacity = 1,
+              fillColor = ~cores(dados_regioes$id),
+              label = dados_regioes$ra)
+ 
+```
+
+## Regiões Administrativas DF
+
+```{r regioes_mapa}
+mapa_df
+```
+
+## Regiões Administraticas DF x Câmeras de Segurança
+```{r layers, echo=TRUE, cache = T}
+mapa_l = leaflet() %>%
+  addTiles() %>%
+  addCircleMarkers(data = dados_cameras,
+                   lng = dados_cameras$point_x, 
+                   lat = dados_cameras$point_y, 
+                   label = dados_cameras$name, 
+                   popup = dados_cameras$popupinfo, 
+                   color = ~pal(dados_cameras$popupinfo),
+                   radius = 6,
+                   group = "Câmeras",
+                   stroke = F,
+                   fillOpacity = 0.6,
+                   clusterOptions = markerClusterOptions()) %>%
+  
+  addPolygons(data = dados_regioes,
+              stroke = T,
+              fillOpacity = 0.75,
+              smoothFactor = 0.5,
+              color = "black",
+              weight = 1,
+              opacity = 1,
+              fillColor = ~cores(dados_regioes$id),
+              label = dados_regioes$ra,
+              group = "Regiões") %>%
+  
+  # Controle das Camadas do mapa
+  addLayersControl(
+    overlayGroups = c("Câmeras", "Regiões"),
+    options = layersControlOptions(collapsed = F)
+  )
+```
+
+## Regiões Administraticas DF x Câmeras de Segurança
+```{r layers_mapa}
+mapa_l
+```
+
+#  {auto-animate="true"}
+
+::: {style="margin-top: 100px;"}
+Googleway
+:::
+
+#  {auto-animate="true"}
+
+::: {style="margin-top: 200px; font-size: 3em;"}
+Googleway
+:::
+
+::: {style="text-align: right; margin-top: -350px;"}
+<img src="imagens/google_maps.png" style="width:500px;height:auto;"/>
+:::
+
+## Googleway
+- Fornece acesso às APIs do Google Maps e a capacidade de plotar um mapa interativo do Google sobreposto com várias camadas e formas.
+- Nele se inclui marcadores, círculos, retângulos, polígonos, linhas (polilinhas) e mapas de calor, além da possibilidade de sobrepor informações sobre o trânsito.
+- Dependendo da API dentro do pacote a ser utilizada, é necessário uma *chave de API* válida para utilizar a maioria das funções.
+
+## Exemplo
+```{r googleway, echo = T, cache = T}
+# chave
+chave <- "AIzaSyC78zbXYMb-7nD8R-YiGruRRXicfsdhqiY"
+
+# setup das chaves
+set_key(chave) # google way
+register_google(key=chave) # ggmap
+
+endereco <- "Torre de TV, Brasilia, Brasil"
+lugar <- geocode(endereco)
+
+
+# Mapa básico com ggmap
+mapa1 <- ggmap::get_map(location = c(lon = lugar$lon, lat = lugar$lat), zoom = 15) 
+
+```
+
+## Exemplo
+```{r googleway_mapa}
+library(ggmap)
+
+ggmap(mapa1) +
+  geom_point(aes(x = lugar$lon, y = lugar$lat), size = 4)
+
+```
+
+
+## {auto-animate="true"}
+::: {style="text-align: center; margin: 300px 0;"}
+Exemplos de API's
+:::
+
+## Google Directions API
+- Permite que o usuário ache direções entre localizações.
+
+```{r gd, echo = T, cache= T}
+set_key(chave) # google way
+register_google(key=chave) # ggmap
+
+direcao <- google_directions(origin = "BSAN Bloco de Salas de Aula Norte, UNB, Brasília, Brasil",
+                             destination = "BSAS Bloco de Salas de Aula Sul, UNB, Brasília, Brasil",
+                             key = chave,
+                             mode = "driving") #mode:	string One of 'driving', 'walking', 'bicycling' or 'transit'.
+
+pontos <- geocode("BSAN Bloco de Salas de Aula Norte, UNB, Brasília, Brasil") %>%
+  bind_rows(geocode("BSAS Bloco de Salas de Aula Sul, UNB, Brasília, Brasil"))
+
+rota <- decode_pl(direcao$routes$overview_polyline$points)
+
+mapa2<- get_map(location = c(lon = mean(rota$lon), lat = mean(rota$lat)), zoom = 15)
+
+```
+
+## Google Directions API
+```{r gd_mapa}
+ggmap(mapa2) +
+  geom_path(data = rota, aes(x = lon, y = lat), color = "blue", size = 1)+
+  geom_point(data = pontos, aes(x = lon, y = lat), color = "red", size = 5)
+```
+
+
+## Google Geocode API
+- Fornece geocodificação e geocodificação reversa de endereços.
+
+```{r gg, echo=T,cache=T}
+df <- google_geocode(address = "Casa Almeria, Brasília",
+                     key = chave)
+
+knitr::kable(geocode_coordinates(df))
+```
+
+
+## Google Places API
+- Obtém dados do mesmo banco de dados usado pelo Google Maps e pelo Google+ Local. Places apresenta mais de 100 milhões de empresas e pontos de interesse que são atualizados frequentemente.
+
+```{r gp, echo =T,cache=T}
+## Por texto
+texto <- google_places(search_string = "Mercados na asa norte, brasilia, Brasil",
+                      key = chave,
+                      language = "pt-BR")
+
+# idiomas: https://developers.google.com/maps/faq#languagesupport
+resultados_texto <- texto[["results"]]
+
+mapa3<- get_map(location = c(lon = mean(resultados_texto$geometry$location$lng), lat = mean(resultados_texto$geometry$location$lat)), zoom = 14) %>%
+  ggmap() +
+  geom_point(data = resultados_texto, aes(x = geometry$location$lng, y = geometry$location$lat), color = "red", size = 4)+
+  theme_void()
+ 
+```
+
+## Google Places API
+```{r gp_mapa}
+mapa3
+```
+
+
+# Referências
+- [https://ipeagit.github.io/geobr/#r-reading-the-data-as-an-sf-object](https://ipeagit.github.io/geobr/#r-reading-the-data-as-an-sf-object)
+- [https://rstudio.github.io/leaflet/](https://rstudio.github.io/leaflet/)
+- [https://datatracker.ietf.org/doc/html/rfc7946](https://datatracker.ietf.org/doc/html/rfc7946)
+- [https://symbolixau.github.io/googleway/articles/googleway-vignette.html](https://symbolixau.github.io/googleway/articles/googleway-vignette.html)
+- [https://www.nceas.ucsb.edu/sites/default/files/2020-04/ggmapCheatsheet.pdf](https://www.nceas.ucsb.edu/sites/default/files/2020-04/ggmapCheatsheet.pdf)
+
