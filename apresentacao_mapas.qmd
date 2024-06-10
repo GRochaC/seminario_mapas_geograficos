@@ -15,13 +15,13 @@ editor: visual
 # Sumário {auto-animate="true"}
 
 ::: incremental
-- Dados espaciais
+-   Dados espaciais
 
-- Leaflet
+-   Leaflet
 
-- Googleway
+-   Googleway
 
-- Referências
+-   Referências
 :::
 
 ```{r setup}
@@ -82,7 +82,7 @@ Geobr
 É um pacote para download de conjuntos de [<strong>dados espaciais oficiais do Brasil</strong>]{style="color: #feb845;"}. O pacote inclui uma ampla gama de dados geoespaciais em formato de geopacote (como [<strong>shapefiles</strong>]{style="color: #feb845;"}).
 :::
 
----
+------------------------------------------------------------------------
 
 ### Exemplo
 
@@ -103,15 +103,13 @@ mun <- geobr::read_municipality(code_muni = "all", year = 2018)
 
 [IBGE](https://www.ibge.gov.br/explica/codigos-dos-municipios.php)
 
-
----
-
+------------------------------------------------------------------------
 
 ### Funções {background-color="#feb845"}
 
 ![](imagens/cheat_sheet_geobr.png)
 
----
+------------------------------------------------------------------------
 
 ### Exemplos
 
@@ -216,14 +214,15 @@ Shapefile
 
 [Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/main/sf.pdf)
 
----
+------------------------------------------------------------------------
 
 ##  {auto-animate="true"}
+
 ::: {style="text-align: center; margin: 300px 0;"}
 Aplicação
 :::
 
----
+------------------------------------------------------------------------
 
 ## Banco de dados
 
@@ -324,13 +323,16 @@ GeoJSON
 :::
 
 ## GeoJSON
-### Introdução
-- GeoJSON é um formato para codificar uma variedade de estruturas de dados geográficos usando *JavaScript Object Notation* (JSON).
-- Um objeto GeoJSON pode representar uma região no espaço (Geometry), uma entidade espacialmente delimitada (Feature), ou uma lista de Features (FeatureCollection).
 
----
+### Introdução
+
+-   GeoJSON é um formato para codificar uma variedade de estruturas de dados geográficos usando *JavaScript Object Notation* (JSON).
+-   Um objeto GeoJSON pode representar uma região no espaço (Geometry), uma entidade espacialmente delimitada (Feature), ou uma lista de Features (FeatureCollection).
+
+------------------------------------------------------------------------
 
 ## Objetos GeoJSON
+
 ::: panel-tabset
 ### Geometry
 
@@ -344,14 +346,14 @@ Tipos de objetos Geometry:
 
 -   Bidimensional: Polygon e MultiPolygon
 
-
 ### Features e FeatureCollection
 
-- Um objeto Feature representa uma entidade espacialmente delimitada. Esse objeto é uma combinação de uma geometria (objeto Geometry) e de características (um objeto que contém um número de pares de propriedades).
+-   Um objeto Feature representa uma entidade espacialmente delimitada. Esse objeto é uma combinação de uma geometria (objeto Geometry) e de características (um objeto que contém um número de pares de propriedades).
 
-- Já um objeto FeatureCollection é um objeto que contém vários objetos Features em sua composição.
+-   Já um objeto FeatureCollection é um objeto que contém vários objetos Features em sua composição.
 
 ### Exemplo
+
 ```{r geojson, eval=F,echo=T}
 {
   "type": "FeatureCollection",
@@ -400,15 +402,15 @@ Tipos de objetos Geometry:
   ]
 }
 ```
-
-
 :::
 
 ## [*Geojson.io*](https://geojson.io)
-- Ferramenta online open source capaz de abrir arquivos GeoJSON existentes e/ou criar novos arquivos contendo dados geoespaciais. 
-- Fornece ferramentas de desenho, edição de dados, busca e de exportação.
+
+-   Ferramenta online open source capaz de abrir arquivos GeoJSON existentes e/ou criar novos arquivos contendo dados geoespaciais.
+-   Fornece ferramentas de desenho, edição de dados, busca e de exportação.
 
 ## [*Geojson.io*](https://geojson.io)
+
 ![](imagens/geojsonio.png)
 
 #  {auto-animate="true"}
@@ -429,8 +431,8 @@ Leaflet
 
 ## Leaflet
 
-- [<strong>Leaflet</strong>]{style="color: #949494;"} é uma das bibliotecas open source mais famosas para mapas iterativos.
-- Funciona eficientemente em todas as principais plataformas de desktop e móveis, pode ser estendido com muitos plugins, possui uma API fácil de usar e bem documentada, e um código-fonte simples e legível.
+-   [<strong>Leaflet</strong>]{style="color: #949494;"} é uma das bibliotecas open source mais famosas para mapas iterativos.
+-   Funciona eficientemente em todas as principais plataformas de desktop e móveis, pode ser estendido com muitos plugins, possui uma API fácil de usar e bem documentada, e um código-fonte simples e legível.
 
 ## Características
 
@@ -511,7 +513,8 @@ mapa_b = leaflet(dados_brasil, options = leafletOptions(dragging = FALSE,
 mapa_b
 ```
 
-## {auto-animate="true"}
+##  {auto-animate="true"}
+
 ::: {style="text-align: center; margin: 300px 0;"}
 Mapas Iterativos
 :::
@@ -625,6 +628,7 @@ mapa_df
 ```
 
 ## Regiões Administraticas DF x Câmeras de Segurança
+
 ```{r layers, echo=TRUE, cache = T}
 mapa_l = leaflet() %>%
   addTiles() %>%
@@ -659,6 +663,7 @@ mapa_l = leaflet() %>%
 ```
 
 ## Regiões Administraticas DF x Câmeras de Segurança
+
 ```{r layers_mapa}
 mapa_l
 ```
@@ -680,11 +685,13 @@ Googleway
 :::
 
 ## Googleway
-- Fornece acesso às APIs do Google Maps e a capacidade de plotar um mapa interativo do Google sobreposto com várias camadas e formas.
-- Nele se inclui marcadores, círculos, retângulos, polígonos, linhas (polilinhas) e mapas de calor, além da possibilidade de sobrepor informações sobre o trânsito.
-- Dependendo da API dentro do pacote a ser utilizada, é necessário uma *chave de API* válida para utilizar a maioria das funções.
+
+-   Fornece acesso às APIs do Google Maps e a capacidade de plotar um mapa interativo do Google sobreposto com várias camadas e formas.
+-   Nele se inclui marcadores, círculos, retângulos, polígonos, linhas (polilinhas) e mapas de calor, além da possibilidade de sobrepor informações sobre o trânsito.
+-   Dependendo da API dentro do pacote a ser utilizada, é necessário uma *chave de API* válida para utilizar a maioria das funções.
 
 ## Exemplo
+
 ```{r googleway, echo = T, cache = T}
 # chave
 chave <- "AIzaSyC78zbXYMb-7nD8R-YiGruRRXicfsdhqiY"
@@ -703,6 +710,7 @@ mapa1 <- ggmap::get_map(location = c(lon = lugar$lon, lat = lugar$lat), zoom = 1
 ```
 
 ## Exemplo
+
 ```{r googleway_mapa}
 library(ggmap)
 
@@ -711,14 +719,15 @@ ggmap(mapa1) +
 
 ```
 
+##  {auto-animate="true"}
 
-## {auto-animate="true"}
 ::: {style="text-align: center; margin: 300px 0;"}
 Exemplos de API's
 :::
 
 ## Google Directions API
-- Permite que o usuário ache direções entre localizações.
+
+-   Permite que o usuário ache direções entre localizações.
 
 ```{r gd, echo = T, cache= T}
 set_key(chave) # google way
@@ -739,15 +748,16 @@ mapa2<- get_map(location = c(lon = mean(rota$lon), lat = mean(rota$lat)), zoom =
 ```
 
 ## Google Directions API
+
 ```{r gd_mapa}
 ggmap(mapa2) +
   geom_path(data = rota, aes(x = lon, y = lat), color = "blue", size = 1)+
   geom_point(data = pontos, aes(x = lon, y = lat), color = "red", size = 5)
 ```
 
-
 ## Google Geocode API
-- Fornece geocodificação e geocodificação reversa de endereços.
+
+-   Fornece geocodificação e geocodificação reversa de endereços.
 
 ```{r gg, echo=T,cache=T}
 df <- google_geocode(address = "Casa Almeria, Brasília",
@@ -756,9 +766,9 @@ df <- google_geocode(address = "Casa Almeria, Brasília",
 knitr::kable(geocode_coordinates(df))
 ```
 
-
 ## Google Places API
-- Obtém dados do mesmo banco de dados usado pelo Google Maps e pelo Google+ Local. Places apresenta mais de 100 milhões de empresas e pontos de interesse que são atualizados frequentemente.
+
+-   Obtém dados do mesmo banco de dados usado pelo Google Maps e pelo Google+ Local. Places apresenta mais de 100 milhões de empresas e pontos de interesse que são atualizados frequentemente.
 
 ```{r gp, echo =T,cache=T}
 ## Por texto
@@ -777,15 +787,15 @@ mapa3<- get_map(location = c(lon = mean(resultados_texto$geometry$location$lng),
 ```
 
 ## Google Places API
+
 ```{r gp_mapa}
 mapa3
 ```
 
-
 # Referências
-- [https://ipeagit.github.io/geobr/#r-reading-the-data-as-an-sf-object](https://ipeagit.github.io/geobr/#r-reading-the-data-as-an-sf-object)
-- [https://rstudio.github.io/leaflet/](https://rstudio.github.io/leaflet/)
-- [https://datatracker.ietf.org/doc/html/rfc7946](https://datatracker.ietf.org/doc/html/rfc7946)
-- [https://symbolixau.github.io/googleway/articles/googleway-vignette.html](https://symbolixau.github.io/googleway/articles/googleway-vignette.html)
-- [https://www.nceas.ucsb.edu/sites/default/files/2020-04/ggmapCheatsheet.pdf](https://www.nceas.ucsb.edu/sites/default/files/2020-04/ggmapCheatsheet.pdf)
 
+-   <https://ipeagit.github.io/geobr/#r-reading-the-data-as-an-sf-object>
+-   <https://rstudio.github.io/leaflet/>
+-   <https://datatracker.ietf.org/doc/html/rfc7946>
+-   <https://symbolixau.github.io/googleway/articles/googleway-vignette.html>
+-   <https://www.nceas.ucsb.edu/sites/default/files/2020-04/ggmapCheatsheet.pdf>
