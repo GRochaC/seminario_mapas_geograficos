@@ -1,2 +1,9 @@
-# seminario_mapas_geograficos
-Slides e arquivos para o seminário da disciplina "EST0091 - COMPUTAÇÃO EM ESTATÍSTICA 2: R".
+# Mapas Geográficos
+O seminário aborda o tema de mapas geográficos utilizando a linguagem R. 
+
+# Descrição
+Nele, são apresentados os tipos de arquivos nos quais dados espaciais podem ser armazenados (shapefile, CSV, GeoJSON), além de informações sobre onde esses dados podem ser encontrados e/ou criados.
+
+Leaflet e Googleway são as bibliotecas foco da apresentação devido à sua notoriedade no ambiente de criação de mapas.
+
+
