@@ -431,12 +431,12 @@ Leaflet
 
 ## Leaflet
 
--   [<strong>Leaflet</strong>]{style="color: #949494;"} é uma das bibliotecas open source mais famosas para mapas iterativos.
+-   [<strong>Leaflet</strong>]{style="color: #949494;"} é uma das bibliotecas open source mais famosas para mapas interativos.
 -   Funciona eficientemente em todas as principais plataformas de desktop e móveis, pode ser estendido com muitos plugins, possui uma API fácil de usar e bem documentada, e um código-fonte simples e legível.
 
 ## Características
 
--   Panorâmica e zoom iterativos.
+-   Panorâmica e zoom interativos.
 -   Compor mapas com marcadores, polígonos, linhas, popups e dentro outros.
 -   Incorporar mapas em documentos knitr/R Markdown/Quarto e aplicativos Shiny.
 -   Renderizar facilmente objetos espaciais dos pacotes `sp` ou `sf`, ou data frames com colunas de latitude/longitude.
@@ -516,7 +516,7 @@ mapa_b
 ##  {auto-animate="true"}
 
 ::: {style="text-align: center; margin: 300px 0;"}
-Mapas Iterativos
+Mapas Interativos
 :::
 
 ## Câmeras de Segurança
